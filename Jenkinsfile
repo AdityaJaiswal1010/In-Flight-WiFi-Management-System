@@ -29,6 +29,7 @@ pipeline {
             steps {
                 echo 'Generating Prisma client...'
                 sh '''
+                    ./env/bin/pip install prisma-client-py
                     ./env/bin/prisma-client-py generate
                 '''
             }
@@ -65,10 +66,10 @@ pipeline {
 
     post {
         success {
-            echo ' Pipeline completed successfully!'
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo ' Pipeline failed. Please check the logs above.'
+            echo 'Pipeline failed. Please check the logs above.'
         }
     }
 }
