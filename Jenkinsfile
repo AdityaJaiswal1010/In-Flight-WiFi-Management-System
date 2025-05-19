@@ -15,14 +15,14 @@ pipeline {
 
         stage('Setup Python Virtual Environment') {
             steps {
-                echo 'Creating virtual environment with Python 3.10...'
                 sh '''
-                    python3.10 -m venv env
+                    /opt/homebrew/bin/python3.10 -m venv env
                     ./env/bin/pip install --upgrade pip
                     ./env/bin/pip install -r requirements.txt
                 '''
             }
         }
+
 
         stage('Generate Prisma Client') {
             steps {
