@@ -1,0 +1,6 @@
+.env
+node_modules/
+migrations/
+__pycache__/
+*.sqlite3
+

@@ -1,35 +1,18 @@
+# app.py
 from fastapi import FastAPI
-import uvicorn
-from fastapi.middleware.cors import CORSMiddleware
+from prisma import Prisma
+from src.auth.auth import get_auth_router
 
-from src.auth.routes import router as auth_router
-from src.database.connection import connect_db, disconnect_db
-
-app = FastAPI(title="Login/Signup API")
-
-# Configure CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # For production, specify the allowed origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Include routers
-app.include_router(auth_router)
+app = FastAPI()
+db = Prisma()
 
 @app.on_event("startup")
-async def startup():
-    await connect_db()
+async def on_startup():
+    await db.connect()
 
 @app.on_event("shutdown")
-async def shutdown():
-    await disconnect_db()
+async def on_shutdown():
+    await db.disconnect()
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to the Login/Signup API"}
-
-if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+# Pass the shared Prisma instance to the auth router
+app.include_router(get_auth_router(db))

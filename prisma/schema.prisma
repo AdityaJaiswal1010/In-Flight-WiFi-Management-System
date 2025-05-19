@@ -1,23 +1,78 @@
 // This is your Prisma schema file
+// This is your Prisma schema file
+generator db {
+  provider = "prisma-client-py"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider             = "prisma-client-py"
-  interface            = "asyncio"
-  recursive_type_depth = 5
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  password       String
+  created_at     DateTime       @default(now())
+  points         Int            @default(1000)
+  bank_balance   Int            @default(2000)
+
+  purchases      Purchase[]
+  premium_plans  PremiumPlan[]
+  transactions   Transaction[]
 }
 
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+model MenuItem {
+  id           String       @id @default(uuid())
+  name         String
+  type         MenuType
+  cost_points  Int
+  description  String?
 
-  @@map("users")
+  purchases    Purchase[]
+}
+
+model Purchase {
+  id         String     @id @default(uuid())
+  user       User       @relation(fields: [user_id], references: [id])
+  user_id    String
+  item       MenuItem   @relation(fields: [item_id], references: [id])
+  item_id    String
+  created_at DateTime   @default(now())
+}
+
+model Transaction {
+  id              String     @id @default(uuid())
+  user            User       @relation(fields: [user_id], references: [id])
+  user_id         String
+  points_added    Int
+  amount_deducted Int
+  created_at      DateTime   @default(now())
+}
+
+model PremiumPlan {
+  id           String        @id @default(uuid())
+  name         String
+  description  String?
+  cost_points  Int
+  type         PremiumType
+  created_at   DateTime      @default(now())
+
+  user         User?         @relation(fields: [user_id], references: [id])
+  user_id      String?
+}
+
+enum MenuType {
+  WIFI
+  FOOD
+  DRINK
+  MERCH
+  UPGRADE
+}
+
+enum PremiumType {
+  BASIC
+  PLUS
+  PRO
+  ELITE
 }
