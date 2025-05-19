@@ -18,6 +18,7 @@ pipeline {
                 sh 'python3 -m venv env'
                 sh './env/bin/pip install --upgrade pip'
                 sh './env/bin/pip install -r requirements.txt'
+                sh './env/bin/python -m prisma generate'
             }
         }
 
