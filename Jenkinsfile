@@ -8,8 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Cloning repository...'
-                git url: 'https://github.com/AdityaJaiswal1010/OnFlightWiFiSystem.git', branch: 'main'
+                echo 'Using the repo already cloned by Jenkins SCM'
             }
         }
 
