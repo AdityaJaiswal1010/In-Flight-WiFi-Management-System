@@ -28,7 +28,6 @@ pipeline {
             steps {
                 echo 'Generating Prisma client...'
                 sh '''
-                    ./env/bin/pip install "prisma-client-py<0.11"
                     ./env/bin/prisma generate
                 '''
             }
