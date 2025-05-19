@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         VENV = 'env'
+        PYTHON_PATH = '/opt/homebrew/bin/python3.10' // make sure this path is correct
     }
 
     stages {
@@ -15,20 +16,22 @@ pipeline {
 
         stage('Setup Python Virtual Environment') {
             steps {
+                echo 'Setting up virtual environment...'
                 sh '''
-                    /opt/homebrew/bin/python3.10 -m venv env
+                    ${PYTHON_PATH} -m venv ${VENV}
                     ./env/bin/pip install --upgrade pip
                     ./env/bin/pip install -r requirements.txt
                 '''
             }
         }
 
-
         stage('Generate Prisma Client') {
             steps {
                 echo 'Generating Prisma client...'
                 sh '''
-                    export PATH="$(./env/bin/python -m site --user-base)/bin:$PATH"
+                    # Calculate correct user base path for Python 3.10 inside virtualenv
+                    USER_BIN_PATH=$(./env/bin/python -m site --user-base)/bin
+                    export PATH="$USER_BIN_PATH:$PATH"
                     ./env/bin/python -m prisma generate
                 '''
             }
@@ -36,7 +39,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                echo 'Running API test cases...'
+                echo 'Running API tests...'
                 sh '''
                     ./env/bin/pip install pytest httpx
                     ./env/bin/pytest tests/ --disable-warnings
@@ -65,10 +68,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Pipeline executed successfully.'
+            echo '✅ Pipeline completed successfully!'
         }
         failure {
-            echo '❌ Pipeline failed. Please check logs above.'
+            echo '❌ Pipeline failed. Please check the logs above.'
         }
     }
 }
