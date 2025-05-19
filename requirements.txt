@@ -6,3 +6,4 @@ pytest-asyncio
 git+https://github.com/RobertCraigie/prisma-client-py.git
 prisma
 PyJWT
+passlib[bcrypt]
