@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         VENV = 'env'
-        PYTHON_VERSION = '3.10.13'
     }
 
     stages {
@@ -14,25 +13,9 @@ pipeline {
             }
         }
 
-        stage('Install Python 3.10 via pyenv') {
-            steps {
-                sh '''
-                    curl https://pyenv.run | bash
-
-                    export PATH="$HOME/.pyenv/bin:$PATH"
-                    eval "$(pyenv init --path)"
-                    eval "$(pyenv virtualenv-init -)"
-
-                    pyenv install -s ${PYTHON_VERSION}
-                    pyenv global ${PYTHON_VERSION}
-
-                    python --version
-                '''
-            }
-        }
-
         stage('Setup Python Virtual Environment') {
             steps {
+                echo 'Creating virtual environment with Python 3.10...'
                 sh '''
                     python3.10 -m venv env
                     ./env/bin/pip install --upgrade pip
@@ -43,6 +26,7 @@ pipeline {
 
         stage('Generate Prisma Client') {
             steps {
+                echo 'Generating Prisma client...'
                 sh '''
                     ./env/bin/pip install "prisma-client-py<0.11"
                     ./env/bin/prisma generate
@@ -50,9 +34,9 @@ pipeline {
             }
         }
 
-
         stage('Run Tests') {
             steps {
+                echo 'Running API test cases...'
                 sh '''
                     ./env/bin/pip install pytest httpx
                     ./env/bin/pytest tests/ --disable-warnings
@@ -62,12 +46,14 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
+                echo 'Building Docker image...'
                 sh 'docker build -t inflight-fastapi-app .'
             }
         }
 
         stage('Deploy') {
             steps {
+                echo 'Deploying container...'
                 sh '''
                     docker stop inflight-fastapi-app || true
                     docker rm inflight-fastapi-app || true
