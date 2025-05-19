@@ -27,6 +27,7 @@ pipeline {
                 echo 'Generating Prisma client...'
                 sh '''
                     export PATH=$(./env/bin/python -m site --user-base)/bin:$PATH
+                    ./env/bin/python -m pip install 'prisma-client-py'
                     ./env/bin/python -m prisma generate
                 '''
             }
