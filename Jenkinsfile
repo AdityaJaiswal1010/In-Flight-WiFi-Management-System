@@ -29,11 +29,11 @@ pipeline {
             steps {
                 echo 'Generating Prisma client...'
                 sh '''
-                    ./env/bin/pip install prisma-client-py
                     ./env/bin/prisma-client-py generate
                 '''
             }
         }
+
 
         stage('Run Tests') {
             steps {
