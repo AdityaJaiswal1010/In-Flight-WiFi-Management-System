@@ -34,7 +34,7 @@ pipeline {
         stage('Setup Python Virtual Environment') {
             steps {
                 sh '''
-                    python -m venv ${VENV}
+                    python3.10 -m venv env
                     ./env/bin/pip install --upgrade pip
                     ./env/bin/pip install -r requirements.txt
                 '''
@@ -44,11 +44,12 @@ pipeline {
         stage('Generate Prisma Client') {
             steps {
                 sh '''
-                    ./env/bin/pip install "prisma-client-py<0.11"  # Safer version pin
+                    ./env/bin/pip install "prisma-client-py<0.11"
                     ./env/bin/prisma generate
                 '''
             }
         }
+
 
         stage('Run Tests') {
             steps {
