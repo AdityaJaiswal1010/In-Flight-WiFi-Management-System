@@ -28,7 +28,7 @@ pipeline {
             steps {
                 echo 'Generating Prisma client...'
                 sh '''
-                    ./env/bin/prisma generate
+                    ./env/bin/python -m prisma generate
                 '''
             }
         }
