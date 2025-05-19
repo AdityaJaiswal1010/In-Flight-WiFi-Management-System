@@ -18,7 +18,7 @@ pipeline {
             steps {
                 echo 'Creating virtual environment and installing requirements...'
                 sh '''
-                    python -m venv env
+                    python3 -m venv env
                     ./env/bin/pip install --upgrade pip
                     ./env/bin/pip install -r requirements.txt
                     export PATH="$PATH:$(./env/bin/python -m site --user-base)/bin"
