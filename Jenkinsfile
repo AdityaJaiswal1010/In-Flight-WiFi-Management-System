@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         VENV = 'env'
-        PYTHON_PATH = '/opt/homebrew/bin/python3.10' // make sure this path is correct
+        PYTHON_PATH = '/opt/homebrew/bin/python3.10' // Ensure this matches your system
     }
 
     stages {
@@ -29,9 +29,13 @@ pipeline {
             steps {
                 echo 'Generating Prisma client...'
                 sh '''
-                    # Calculate correct user base path for Python 3.10 inside virtualenv
-                    USER_BIN_PATH=$(./env/bin/python -m site --user-base)/bin
+                    # Get the correct path to Python 3.10's user base
+                    USER_BIN_PATH=$(./env/bin/python -c 'import site; print(site.USER_BASE + "/bin")')
+
+                    # Add it to PATH so prisma-client-py binary is found
                     export PATH="$USER_BIN_PATH:$PATH"
+
+                    # Now generate Prisma client
                     ./env/bin/python -m prisma generate
                 '''
             }
