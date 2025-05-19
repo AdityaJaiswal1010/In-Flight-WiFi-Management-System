@@ -3,4 +3,5 @@ uvicorn
 httpx[http2]
 pytest
 pytest-asyncio
-prisma-client-py
+git+https://github.com/RobertCraigie/prisma-client-py.git
+prisma
