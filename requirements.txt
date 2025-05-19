@@ -8,3 +8,4 @@ prisma
 PyJWT
 passlib[bcrypt]
 pydantic[email]
+requests
