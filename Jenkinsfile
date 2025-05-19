@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         VENV = 'env'
-        PYTHON_PATH = '/opt/homebrew/bin/python3.10'
+        PYTHON_PATH = '/opt/homebrew/bin/python3.12'
     }
 
     stages {
@@ -29,11 +29,23 @@ pipeline {
             steps {
                 echo 'Generating Prisma client...'
                 sh '''
+                    # Setup Node.js inside virtual environment
+                    ./env/bin/pip install nodeenv
+                    ./env/bin/nodeenv -p
+
+                    # Create package.json if not present
+                    if [ ! -f package.json ]; then
+                      npm init -y
+                    fi
+
+                    # Install required Node packages locally
+                    npm install prisma @prisma/client
+
+                    # Generate Prisma client using Python wrapper
                     ./env/bin/prisma-client-py generate
                 '''
             }
         }
-
 
         stage('Run Tests') {
             steps {
