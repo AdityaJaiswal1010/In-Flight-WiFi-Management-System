@@ -1,7 +1,17 @@
+import pytest
 from starlette.testclient import TestClient
 from app import app
+from prisma import Prisma
 
 client = TestClient(app)
+db = Prisma()
+
+@pytest.fixture(scope="module", autouse=True)
+def setup_and_teardown():
+    import asyncio
+    asyncio.run(db.connect())
+    yield
+    asyncio.run(db.disconnect())
 
 def test_register_success():
     response = client.post("/register", json={
