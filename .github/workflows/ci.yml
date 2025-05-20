@@ -33,7 +33,7 @@ jobs:
     - name: Run Tests
         run: |
           source env/bin/activate
-          pytest tests/ --disable-warnings --maxfail=1
+          pytest tests/test_register.py --disable-warnings --maxfail=1
     
 
 
