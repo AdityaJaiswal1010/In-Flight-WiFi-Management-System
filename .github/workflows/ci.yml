@@ -26,22 +26,17 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Load environment variables from prisma/.env
+    - name: Load .env into environment
       run: |
-        echo "Loading prisma/.env into environment..."
+        echo "Loading .env into environment..."
         set -a
-        source prisma/.env
+        source .env
         set +a
 
     - name: Generate Prisma client
       run: |
         source env/bin/activate
         python -m prisma generate
-
-    - name: Run Prisma DB Push (optional)
-      run: |
-        source env/bin/activate
-        python -m prisma db push
 
     - name: Run tests
       run: |
