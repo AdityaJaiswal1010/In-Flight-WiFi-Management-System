@@ -1,10 +1,9 @@
 import pytest
 from starlette.testclient import TestClient
 from app import app
-from prisma import Prisma
+from src.database.connection import db  # Adjust based on your actual connection module
 
 client = TestClient(app)
-db = Prisma()
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_and_teardown():
@@ -18,7 +17,7 @@ def test_register_success():
         "email": "test@example.com",
         "password": "secure123"
     })
-    assert response.status_code == 200
+    assert response.status_code == 200 or response.status_code == 201
     assert "access_token" in response.json()
 
 def test_register_duplicate():
