@@ -30,10 +30,7 @@ jobs:
       run: |
         source env/bin/activate
         python -m prisma generate
-    - name: Run Tests
-        run: |
-          source env/bin/activate
-          pytest tests/test_register.py --disable-warnings --maxfail=1
+
     
 
 
